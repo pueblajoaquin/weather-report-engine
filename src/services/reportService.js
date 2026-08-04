@@ -54,3 +54,32 @@ export async function saveErrorMessageService(reportId, errorMessage) {
         data: { errorMessage },
     })
 }
+
+export async function listReportsService() {
+    return await prisma.report.findMany({
+        orderBy: { createdAt: 'desc' }
+    })
+}
+
+export async function retryReportService(reportId) {
+    const report = await prisma.report.findUnique({
+        where: { id: reportId }
+    })
+
+    if (!report) {
+        return null
+    }
+
+    if (report.status !== 'failed') {
+        throw new Error('Only failed error can be retried')
+    }
+
+    const updated = await prisma.report.update({
+        where: { id: reportId },
+        data: { status: 'pending', errorMessage: null }
+    })
+
+    await reportQueue.add('generate-report', { reportId }, { attempts: 3, backoff: { type: 'exponential', delay: 5000 } })
+
+    return updated
+}

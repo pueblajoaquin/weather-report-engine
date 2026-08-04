@@ -68,3 +68,23 @@ export async function getAllReportsController(req, res) {
         return res.status(500).json({ error: 'Internal server error' })
     }
 }
+
+export async function retryReportController(req, res) {
+    const { id } = req.params
+
+    try {
+        const result = await retryReportService(id)
+
+        if (!result) {
+            return res.status(404).json({ error: 'Report not found' })
+        }
+
+        return res.status(202).json(result)
+    } catch (error) {
+        if (error.message === 'ONLY_FALIDED_ERROR_CAN_BE_RETRIED') {
+            return res.status(409).json({ error: `Only failed reports can be retried (current status: ${result.currentStatus})`, })
+        }
+        console.error(error)
+        return res.status(500).json({ error: 'Internal server error' })
+    }
+}

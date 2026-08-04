@@ -15,3 +15,35 @@ export async function createReportService({ city, startDate, endDate }) {
 
     return report
 }
+
+export async function getReportByIdService(reportId) {
+    const report = await prisma.report.findUnique({
+        where: {
+            id: reportId
+        }
+    })
+    return report
+}
+
+export async function markFailed(reportId, errorMessage) {
+    const report = prisma.report.update({
+        where: { id: reportId },
+        data: { status: 'failed', errorMessage }
+    })
+    return report
+}
+
+export async function markCompleted(reportId, filePath) {
+    const report = prisma.report.update({
+        where: { id: reportId },
+        data: { status: 'failed', filePath }
+    })
+    return report
+}
+
+export async function saveErrorMessage(reportId, errorMessage) {
+    return prisma.report.update({
+        where: { id: reportId },
+        data: { errorMessage },
+    })
+}

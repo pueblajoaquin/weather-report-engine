@@ -48,7 +48,7 @@ export async function downloadReportController(req, res) {
             return res.status(409).json({ error: 'Report is not ready for download' })
         }
 
-        if (!report.filePath || !fs.exists(report.filePath)) {
+        if (!report.filePath || !fs.existsSync(report.filePath)) {
             return res.status(404).json({ error: 'Report file not found on server' })
         }
 

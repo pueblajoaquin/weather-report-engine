@@ -1,23 +1,23 @@
 import { UnrecoverableError } from 'bullmq'
 import { geocodeCity, fetchHistoricalWeather } from '../services/weatherService.js'
 import { generateCsv } from '../services/csvService.js'
-import { getReportById, markProcessing, markFailed, markCompleted, saveErrorMessage } from '../services/reportService.js'
+import { getReportByIdService, markProcessingService, markFailedService, markCompletedService, saveErrorMessageService } from '../services/reportService.js'
 
 export default async function reportProcessor(job) {
     const { reportId } = job.data
-    const report = await getReportById(reportId)
+    const report = await getReportByIdService(reportId)
 
     if (!report) {
         throw new UnrecoverableError(`Report ${reportId} not found`)
     }
 
-    await markProcessing(reportId)
+    await markProcessingService(reportId)
 
     const location = await geocodeCity(report.city)
 
     if (!location) {
         const message = `City "${report.city}" could not be resolved`
-        await markFailed(reportId, message)
+        await markFailedService(reportId, message)
         throw new UnrecoverableError(message)
     }
 
@@ -30,10 +30,10 @@ export default async function reportProcessor(job) {
         })
 
         const filePath = await generateCsv(reportId, weatherData)
-        await markCompleted(reportId, filePath)
+        await markCompletedService(reportId, filePath)
 
     } catch (error) {
-        await saveErrorMessage(reportId, error.message)
+        await saveErrorMessageService(reportId, error.message)
         throw error
     }
 }

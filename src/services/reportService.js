@@ -25,14 +25,14 @@ export async function getReportByIdService(reportId) {
     return report
 }
 
-export async function markProcessing(reportId) {
+export async function markProcessingService(reportId) {
     return await prisma.report.update({
         where: { id: reportId },
         data: { status: 'processing' },
     })
 }
 
-export async function markFailed(reportId, errorMessage) {
+export async function markFailedService(reportId, errorMessage) {
     const report = await prisma.report.update({
         where: { id: reportId },
         data: { status: 'failed', errorMessage }
@@ -40,7 +40,7 @@ export async function markFailed(reportId, errorMessage) {
     return report
 }
 
-export async function markCompleted(reportId, filePath) {
+export async function markCompletedService(reportId, filePath) {
     const report = await prisma.report.update({
         where: { id: reportId },
         data: { status: 'failed', filePath }
@@ -48,7 +48,7 @@ export async function markCompleted(reportId, filePath) {
     return report
 }
 
-export async function saveErrorMessage(reportId, errorMessage) {
+export async function saveErrorMessageService(reportId, errorMessage) {
     return await prisma.report.update({
         where: { id: reportId },
         data: { errorMessage },

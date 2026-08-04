@@ -43,7 +43,7 @@ export async function markFailedService(reportId, errorMessage) {
 export async function markCompletedService(reportId, filePath) {
     const report = await prisma.report.update({
         where: { id: reportId },
-        data: { status: 'failed', filePath }
+        data: { status: 'completed', filePath }
     })
     return report
 }

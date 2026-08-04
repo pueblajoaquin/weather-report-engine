@@ -34,7 +34,7 @@ export async function getReportStatusController(req, res) {
     }
 }
 
-export async function downloadReportService(req, res) {
+export async function downloadReportController(req, res) {
     const { id } = req.params
 
     try {
@@ -51,7 +51,20 @@ export async function downloadReportService(req, res) {
         if (!report.filePath || !fs.exists(report.filePath)) {
             return res.status(404).json({ error: 'Report file not found on server' })
         }
-    } catch (error) {
 
+        return res.status(200).download(report.filePath, `weather-report-${id}.csv`)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ error: 'Internal server error' })
+    }
+}
+
+export async function getAllReportsController(req, res) {
+    try {
+        const reports = await listReportsService()
+        return res.status(200).json(reports)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ error: 'Internal server error' })
     }
 }

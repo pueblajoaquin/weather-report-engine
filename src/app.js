@@ -1,5 +1,5 @@
 import express from 'express'
-import reportRoutes from './routes/reportRoutes'
+import reportRoutes from './routes/reportRoutes.js'
 
 const app = express()
 

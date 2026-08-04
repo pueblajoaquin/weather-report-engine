@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { createReport } from '../controllers/reportController'
+import { createReportController } from '../controllers/reportController.js'
 
 const router = Router()
 
-router.post('/reports', createReport)
+router.post('/reports', createReportController)
 
-export default report  
+export default router

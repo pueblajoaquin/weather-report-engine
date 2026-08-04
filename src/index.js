@@ -1,5 +1,7 @@
-import 'dotenv/config'
-import express from 'express'
+import app from './app'
 
+const PORT = 3000
 
-console.log('REDIS_URL:', process.env.REDIS_URL)
+app.listen(PORT, () => {
+    console.log('Server runing in port ', PORT)
+})

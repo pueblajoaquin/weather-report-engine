@@ -71,7 +71,7 @@ export async function retryReportService(reportId) {
     }
 
     if (report.status !== 'failed') {
-        throw new Error('ONLY_FALIDED_ERROR_CAN_BE_RETRIED')
+        throw new Error(`Only failed reports can be retried (current status: ${report.status})`)
     }
 
     const updated = await prisma.report.update({

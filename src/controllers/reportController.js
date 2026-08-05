@@ -1,4 +1,4 @@
-import fs, { fsyncSync } from 'node:fs'
+import fs from 'node:fs'
 import { createReportService, getReportByIdService, listReportsService, retryReportService } from '../services/reportService.js'
 
 export async function createReportController(req, res) {
@@ -13,7 +13,7 @@ export async function createReportController(req, res) {
         return res.status(201).json({ id: report.id, status: report.status })
     } catch (error) {
         console.error(error)
-        return res.status(500).json({ error: 'Interval server error' })
+        return res.status(500).json({ error: 'Internal server error' })
     }
 }
 
@@ -81,8 +81,8 @@ export async function retryReportController(req, res) {
 
         return res.status(202).json(result)
     } catch (error) {
-        if (error.message === 'ONLY_FALIDED_ERROR_CAN_BE_RETRIED') {
-            return res.status(409).json({ error: `Only failed reports can be retried (current status: ${result.currentStatus})`, })
+        if (error.message.startsWith('Only failed reports can be retried')) {
+            return res.status(409).json({ error: error.message })
         }
         console.error(error)
         return res.status(500).json({ error: 'Internal server error' })

@@ -14,9 +14,16 @@ worker.on('completed', (job) => {
 })
 
 worker.on('failed', async (job, error) => {
+    if (!job) {
+        console.error('A job failed without context:', error.message)
+        return
+    }
+
     console.error(`Job ${job.id} failed for report ${job.data.reportId}:`, error.message)
 
-    if (job.attemptsMade >= job.opts.attempts) {
+    const maxAttempts = job.opts.attempts ?? 1
+
+    if (job.attemptsMade >= maxAttempts) {
         await markFailedService(job.data.reportId, error.message)
     }
 })

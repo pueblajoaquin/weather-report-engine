@@ -42,7 +42,11 @@ describe('reportService', () => {
                 status: 'pending',
             },
         })
-        expect(reportQueueMock.add).toHaveBeenCalledWith('generate-report', { reportId: 'report-1' })
+        expect(reportQueueMock.add).toHaveBeenCalledWith(
+            'generate-report',
+            { reportId: 'report-1' },
+            expect.objectContaining({ attempts: 3, backoff: { type: 'exponential', delay: 5000 } })
+        )
     })
 
     it('returns a report by id', async () => {

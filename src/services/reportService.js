@@ -11,7 +11,7 @@ export async function createReportService({ city, startDate, endDate }) {
         },
     })
 
-    await reportQueue.add('generate-report', { reportId: report.id })
+    await reportQueue.add('generate-report', { reportId: report.id }, { attempts: 3, backoff: { type: 'exponential', delay: 5000 } })
 
     return report
 }
